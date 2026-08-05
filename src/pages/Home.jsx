@@ -65,18 +65,18 @@ export default function Home() {
       {/* Hero / Sobre mí */}
       <Container as="section" id="perfil" className="pt-22 pb-14">
         <div className="w-full md:mx-auto md:max-w-[1000px]">
-          <motion.h1 initial="hidden" animate="show" variants={fadeUp} className="mb-4.5 w-full text-[clamp(32px,5vw,52px)]">
+          <motion.h1 initial="hidden" animate="show" variants={fadeUp} className="mb-4.5 w-full text-center text-[clamp(32px,5vw,52px)]">
             {profile?.full_name || "Tu nombre aquí"}
           </motion.h1>
 
-          <motion.p initial="hidden" animate="show" variants={fadeUp} className="mb-5 min-h-6 w-full font-mono text-base text-primary">
+          <motion.p initial="hidden" animate="show" variants={fadeUp} className="mb-5 min-h-6 w-full text-center font-mono text-base text-primary">
             <TypedHeadline headline={profile?.headline} />
           </motion.p>
 
           {profile?.skills?.length > 0 && (
-            <motion.div initial="hidden" animate="show" variants={fadeUp} className="mb-7 w-full">
+            <motion.div initial="hidden" animate="show" variants={fadeUp} className="mb-7 w-full text-center">
               <div className="mb-2.5 font-mono text-xs text-muted-foreground">stack</div>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap justify-center gap-2">
                 {profile.skills.map((s) => (
                   <Badge key={s} variant="outline" className="font-mono font-normal text-muted-foreground">{s}</Badge>
                 ))}
@@ -93,7 +93,7 @@ export default function Home() {
             {profile?.bio}
           </motion.p>
           {profile?.location && (
-            <motion.p initial="hidden" animate="show" variants={fadeUp} className="mb-7 w-full font-mono text-[13px]">📍 {profile.location}</motion.p>
+            <motion.p initial="hidden" animate="show" variants={fadeUp} className="mb-7 w-full text-center font-mono text-[13px]">📍 {profile.location}</motion.p>
           )}
 
           {profile?.cv_url && (
