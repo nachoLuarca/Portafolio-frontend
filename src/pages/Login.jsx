@@ -39,7 +39,7 @@ export default function Login() {
 
   return (
     <Container className="max-w-100 py-20">
-      <h1 className="mb-1.5 text-[28px]">Acceso admin</h1>
+      <h1 className="mb-1.5 text-center text-[28px]">Acceso admin</h1>
       <p className="mb-7 text-sm">Iniciá sesión para gestionar el contenido del sitio.</p>
 
       <form onSubmit={handleSubmit} className="rounded-lg border border-border bg-card p-6 shadow-sm">
