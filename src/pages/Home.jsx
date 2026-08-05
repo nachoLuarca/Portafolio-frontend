@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import api from "../api/axios";
@@ -49,17 +49,6 @@ export default function Home() {
   const [education, setEducation] = useState([]);
   const [certifications, setCertifications] = useState([]);
 
-  const yearsExp = useMemo(() => {
-    if (experience.length === 0) return null;
-    const earliest = experience.reduce((min, item) => {
-      const start = item.start_date ? new Date(item.start_date) : null;
-      return start && (!min || start < min) ? start : min;
-    }, null);
-    if (!earliest) return null;
-    const years = (Date.now() - earliest.getTime()) / (1000 * 60 * 60 * 24 * 365.25);
-    return Math.max(1, Math.round(years));
-  }, [experience]);
-
   useEffect(() => {
     api.get("/profile").then((res) => setProfile(res.data)).catch(() => {});
     api.get("/projects")
@@ -76,17 +65,16 @@ export default function Home() {
       {/* Hero / Sobre mí */}
       <Container as="section" id="perfil" className="pt-22 pb-14">
         <div className="text-center">
-          <motion.h1 initial="hidden" animate="show" variants={fadeUp} className="mb-4.5 w-full text-balance text-[clamp(32px,5vw,52px)]">
+          <motion.h1 initial="hidden" animate="show" variants={fadeUp} className="mx-auto mb-4.5 w-full text-[clamp(32px,5vw,52px)]">
             {profile?.full_name || "Tu nombre aquí"}
           </motion.h1>
 
-          <motion.p initial="hidden" animate="show" variants={fadeUp} className="mx-auto mb-5 min-h-6 max-w-2xl text-balance font-mono text-base text-primary">
+          <motion.p initial="hidden" animate="show" variants={fadeUp} className="mx-auto mb-5 min-h-6 w-full font-mono text-base text-primary sm:max-w-[85%]">
             <TypedHeadline headline={profile?.headline} />
-            {yearsExp && <span> · {yearsExp}+ años de experiencia</span>}
           </motion.p>
 
           {profile?.skills?.length > 0 && (
-            <motion.div initial="hidden" animate="show" variants={fadeUp} className="mx-auto mb-7 max-w-xl">
+            <motion.div initial="hidden" animate="show" variants={fadeUp} className="mx-auto mb-7 w-full">
               <div className="mb-2.5 font-mono text-xs text-muted-foreground">stack</div>
               <div className="flex flex-wrap justify-center gap-2">
                 {profile.skills.map((s) => (
@@ -96,11 +84,11 @@ export default function Home() {
             </motion.div>
           )}
 
-          <motion.p initial="hidden" animate="show" variants={fadeUp} className="mx-auto mb-3 max-w-lg text-balance text-base wrap-break-word whitespace-normal text-muted-foreground">
+          <motion.p initial="hidden" animate="show" variants={fadeUp} className="mx-auto mb-3 w-full text-base wrap-break-word whitespace-normal text-muted-foreground sm:max-w-[70%]">
             {profile?.bio}
           </motion.p>
           {profile?.location && (
-            <motion.p initial="hidden" animate="show" variants={fadeUp} className="mb-7 font-mono text-[13px]">📍 {profile.location}</motion.p>
+            <motion.p initial="hidden" animate="show" variants={fadeUp} className="mx-auto mb-7 w-full font-mono text-[13px] sm:max-w-[55%]">📍 {profile.location}</motion.p>
           )}
 
           {profile?.cv_url && (
