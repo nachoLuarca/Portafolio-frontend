@@ -64,19 +64,19 @@ export default function Home() {
     <div>
       {/* Hero / Sobre mí */}
       <Container as="section" id="perfil" className="pt-22 pb-14">
-        <div className="text-center">
-          <motion.h1 initial="hidden" animate="show" variants={fadeUp} className="mx-auto mb-4.5 w-full text-[clamp(32px,5vw,52px)]">
+        <div className="w-full md:mx-auto md:max-w-[1000px]">
+          <motion.h1 initial="hidden" animate="show" variants={fadeUp} className="mb-4.5 w-full text-[clamp(32px,5vw,52px)]">
             {profile?.full_name || "Tu nombre aquí"}
           </motion.h1>
 
-          <motion.p initial="hidden" animate="show" variants={fadeUp} className="mx-auto mb-5 min-h-6 w-full font-mono text-base text-primary sm:max-w-[85%]">
+          <motion.p initial="hidden" animate="show" variants={fadeUp} className="mb-5 min-h-6 w-full font-mono text-base text-primary">
             <TypedHeadline headline={profile?.headline} />
           </motion.p>
 
           {profile?.skills?.length > 0 && (
-            <motion.div initial="hidden" animate="show" variants={fadeUp} className="mx-auto mb-7 w-full">
+            <motion.div initial="hidden" animate="show" variants={fadeUp} className="mb-7 w-full">
               <div className="mb-2.5 font-mono text-xs text-muted-foreground">stack</div>
-              <div className="flex flex-wrap justify-center gap-2">
+              <div className="flex flex-wrap gap-2">
                 {profile.skills.map((s) => (
                   <Badge key={s} variant="outline" className="font-mono font-normal text-muted-foreground">{s}</Badge>
                 ))}
@@ -84,15 +84,20 @@ export default function Home() {
             </motion.div>
           )}
 
-          <motion.p initial="hidden" animate="show" variants={fadeUp} className="mx-auto mb-3 w-full text-base wrap-break-word whitespace-normal text-muted-foreground sm:max-w-[70%]">
+          <motion.p
+            initial="hidden"
+            animate="show"
+            variants={fadeUp}
+            className="mb-3 w-full text-left text-base wrap-break-word whitespace-normal text-muted-foreground md:text-justify md:[text-justify:inter-word]"
+          >
             {profile?.bio}
           </motion.p>
           {profile?.location && (
-            <motion.p initial="hidden" animate="show" variants={fadeUp} className="mx-auto mb-7 w-full font-mono text-[13px] sm:max-w-[55%]">📍 {profile.location}</motion.p>
+            <motion.p initial="hidden" animate="show" variants={fadeUp} className="mb-7 w-full font-mono text-[13px]">📍 {profile.location}</motion.p>
           )}
 
           {profile?.cv_url && (
-            <motion.div initial="hidden" animate="show" variants={fadeUp} className="flex justify-center">
+            <motion.div initial="hidden" animate="show" variants={fadeUp} className="flex">
               <Button asChild><a href={profile.cv_url} target="_blank" rel="noreferrer">Descargar CV</a></Button>
             </motion.div>
           )}
