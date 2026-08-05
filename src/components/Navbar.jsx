@@ -7,6 +7,7 @@ import { useAuth } from "../context/AuthContext.jsx";
 import { Button } from "@/components/ui/button";
 
 const sections = [
+  { href: "/#perfil", label: "perfil" },
   { href: "/#experiencia", label: "experiencia" },
   { href: "/#proyectos", label: "proyectos" },
   { href: "/#educacion", label: "educación" },
@@ -20,11 +21,11 @@ export default function Navbar() {
   const adminLabel = user ? "panel →" : "admin →";
 
   return (
-    <header className="sticky top-0 z-10 border-b border-border bg-[var(--nav-bg)] backdrop-blur-sm">
+    <header className="sticky top-0 z-10 border-b border-border bg-(--nav-bg) backdrop-blur-sm">
       <Container as="nav" className="flex h-16 items-center justify-end gap-4">
         <div className="hidden items-center gap-5 md:flex">
           {sections.map((s) => (
-            <a key={s.href} href={s.href} className="font-mono text-[13px] whitespace-nowrap text-muted-foreground hover:text-foreground">
+            <a key={s.href} href={s.href} className="font-mono text-[13px] whitespace-nowrap text-muted-foreground hover:text-accent-2">
               {s.label}
             </a>
           ))}
@@ -58,7 +59,7 @@ export default function Navbar() {
                 key={s.href}
                 href={s.href}
                 onClick={() => setOpen(false)}
-                className="rounded-md px-2 py-2.5 font-mono text-[13px] text-muted-foreground hover:bg-secondary hover:text-foreground"
+                className="rounded-md px-2 py-2.5 font-mono text-[13px] text-muted-foreground hover:bg-secondary hover:text-accent-2"
               >
                 {s.label}
               </a>

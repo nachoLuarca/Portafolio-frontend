@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { Pencil, Trash2, Plus } from "lucide-react";
 import AdminLayout from "../components/AdminLayout.jsx";
 import PageHeader from "../components/PageHeader.jsx";
 import LoadingState from "../components/LoadingState.jsx";
@@ -33,7 +34,7 @@ export default function CertificationsList() {
           title="Certificaciones"
           action={
             <Button asChild>
-              <Link to="/admin/certificaciones/nuevo">+ nueva certificación</Link>
+              <Link to="/admin/certificaciones/nuevo"><Plus className="size-4" /> nueva certificación</Link>
             </Button>
           }
         />
@@ -49,10 +50,20 @@ export default function CertificationsList() {
               {item.issue_date && <div className="font-mono text-xs text-muted-foreground">{item.issue_date.slice(0, 10)}</div>}
             </div>
             <div className="flex gap-2">
-              <Button asChild variant="outline">
-                <Link to={`/admin/certificaciones/${item.id}`}>editar</Link>
+              <Button asChild variant="outline" size="icon">
+                <Link to={`/admin/certificaciones/${item.id}`} aria-label="Editar" title="Editar">
+                  <Pencil className="size-4" />
+                </Link>
               </Button>
-              <Button variant="destructive" onClick={() => setPendingDelete(item.id)}>eliminar</Button>
+              <Button
+                variant="destructive"
+                size="icon"
+                onClick={() => setPendingDelete(item.id)}
+                aria-label="Eliminar"
+                title="Eliminar"
+              >
+                <Trash2 className="size-4" />
+              </Button>
             </div>
           </div>
         ))}

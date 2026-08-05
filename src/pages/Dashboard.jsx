@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { Pencil, Trash2, Plus } from "lucide-react";
 import api from "../api/axios";
 import AdminLayout from "../components/AdminLayout.jsx";
 import PageHeader from "../components/PageHeader.jsx";
@@ -36,7 +37,7 @@ export default function Dashboard() {
           title="Proyectos"
           action={
             <Button asChild>
-              <Link to="/admin/proyectos/nuevo">+ nuevo proyecto</Link>
+              <Link to="/admin/proyectos/nuevo"><Plus className="size-4" /> nuevo proyecto</Link>
             </Button>
           }
         />
@@ -58,10 +59,20 @@ export default function Dashboard() {
               <strong className="font-display text-[17px]">{p.title}</strong>
             </div>
             <div className="flex shrink-0 gap-2">
-              <Button asChild variant="outline">
-                <Link to={`/admin/proyectos/${p.id}`}>editar</Link>
+              <Button asChild variant="outline" size="icon">
+                <Link to={`/admin/proyectos/${p.id}`} aria-label="Editar" title="Editar">
+                  <Pencil className="size-4" />
+                </Link>
               </Button>
-              <Button variant="destructive" onClick={() => setPendingDelete(p.id)}>eliminar</Button>
+              <Button
+                variant="destructive"
+                size="icon"
+                onClick={() => setPendingDelete(p.id)}
+                aria-label="Eliminar"
+                title="Eliminar"
+              >
+                <Trash2 className="size-4" />
+              </Button>
             </div>
           </div>
         ))}

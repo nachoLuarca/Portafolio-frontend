@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export default function Login() {
-  const { user, login } = useAuth();
+  const { user, login, logoutReason, clearLogoutReason } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -25,6 +25,7 @@ export default function Login() {
   async function handleSubmit(e) {
     e.preventDefault();
     setError("");
+    clearLogoutReason();
     setLoading(true);
     try {
       await login(email, password);
@@ -37,11 +38,18 @@ export default function Login() {
   }
 
   return (
-    <Container className="max-w-[400px] py-20">
+    <Container className="max-w-100 py-20">
       <h1 className="mb-1.5 text-[28px]">Acceso admin</h1>
       <p className="mb-7 text-sm">Iniciá sesión para gestionar el contenido del sitio.</p>
 
       <form onSubmit={handleSubmit} className="rounded-lg border border-border bg-card p-6 shadow-sm">
+        {logoutReason && (
+          <Alert className="mb-4">
+            <CircleAlert className="size-4" />
+            <AlertDescription>{logoutReason}</AlertDescription>
+          </Alert>
+        )}
+
         <div className="space-y-4">
           <div className="space-y-1.5">
             <Label htmlFor="email">Email</Label>

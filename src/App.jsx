@@ -1,5 +1,7 @@
 import { Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar.jsx";
+import Footer from "./components/Footer.jsx";
+import ConnectionBanner from "./components/ConnectionBanner.jsx";
 import PrivateRoute from "./components/PrivateRoute.jsx";
 import Home from "./pages/Home.jsx";
 import Projects from "./pages/Projects.jsx";
@@ -18,11 +20,12 @@ import MessagesAdmin from "./pages/MessagesAdmin.jsx";
 import NotFound from "./pages/NotFound.jsx";
 
 export default function App() {
-  const { pathname } = useLocation();
-  const isAdmin = pathname.startsWith("/admin");
+  const location = useLocation();
+  const isAdmin = location.pathname.startsWith("/admin");
 
   return (
     <>
+      <ConnectionBanner />
       {!isAdmin && <Navbar />}
       <Routes>
         <Route path="/" element={<Home />} />
@@ -43,6 +46,7 @@ export default function App() {
 
         <Route path="*" element={<NotFound />} />
       </Routes>
+      {!isAdmin && <Footer />}
     </>
   );
 }

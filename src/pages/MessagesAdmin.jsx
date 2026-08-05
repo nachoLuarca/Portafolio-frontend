@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Trash2 } from "lucide-react";
 import AdminLayout from "../components/AdminLayout.jsx";
 import PageHeader from "../components/PageHeader.jsx";
 import StatusBadge from "../components/StatusBadge.jsx";
@@ -63,7 +64,15 @@ export default function MessagesAdmin() {
               <Button asChild variant="outline">
                 <a href={`mailto:${m.email}`}>responder</a>
               </Button>
-              <Button variant="destructive" onClick={() => setPendingDelete(m.id)}>eliminar</Button>
+              <Button
+                variant="destructive"
+                size="icon"
+                onClick={() => setPendingDelete(m.id)}
+                aria-label="Eliminar"
+                title="Eliminar"
+              >
+                <Trash2 className="size-4" />
+              </Button>
             </div>
           </div>
         ))}

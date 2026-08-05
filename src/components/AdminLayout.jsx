@@ -74,7 +74,7 @@ export default function AdminLayout({ children }) {
       )}
 
       {/* Desktop sidebar: nav arriba, bloque de usuario pegado abajo via flex */}
-      <aside className="hidden w-[220px] shrink-0 border-r border-border md:sticky md:top-0 md:flex md:h-screen md:flex-col md:p-6">
+      <aside className="hidden w-55 shrink-0 border-r border-border md:sticky md:top-0 md:flex md:h-screen md:flex-col md:p-6">
         <nav className="min-h-0 flex-1 space-y-0.5 overflow-y-auto">
           {links.map((l) => (
             <Link
@@ -93,10 +93,6 @@ export default function AdminLayout({ children }) {
         <div className="mt-4 shrink-0">
           <Separator className="mb-4" />
           <div className="space-y-2">
-            <Link to="/" className={homeLinkClass}>
-              <Home className="size-3.5" />
-              Volver al inicio
-            </Link>
             <UserMenu />
           </div>
         </div>

@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import api from "../api/axios";
 import Container from "../components/Container.jsx";
+import LoadingState from "../components/LoadingState.jsx";
+import EmptyState from "../components/EmptyState.jsx";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
@@ -19,7 +21,7 @@ export default function ProjectDetail() {
   if (error) {
     return (
       <Container className="py-22">
-        <p>No se encontró este proyecto.</p>
+        <EmptyState title="No se encontró este proyecto" description="Puede que haya sido movido o eliminado." />
         <Button asChild variant="outline" className="mt-4">
           <Link to="/proyectos">← volver</Link>
         </Button>
@@ -28,11 +30,11 @@ export default function ProjectDetail() {
   }
 
   if (!project) {
-    return <Container className="py-22"><p>Cargando…</p></Container>;
+    return <Container className="py-22"><LoadingState rows={4} /></Container>;
   }
 
   return (
-    <Container className="max-w-[760px] py-14 pb-22">
+    <Container className="max-w-190 py-14 pb-22">
       <Link to="/proyectos" className="font-mono text-[13px] text-muted-foreground">← proyectos/</Link>
 
       <h1 className="my-4 text-4xl">{project.title}</h1>
