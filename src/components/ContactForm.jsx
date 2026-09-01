@@ -28,15 +28,15 @@ export default function ContactForm() {
 
   if (status === "sent") {
     return (
-      <div className="rounded-lg border border-border bg-card p-7 text-center">
-        <p className="mb-2 font-mono text-success">✓ mensaje enviado</p>
-        <p className="text-sm">Gracias por escribir. Te responderé lo antes posible.</p>
+      <div className="border-t border-border pt-5 text-left">
+        <p className="mb-2 font-mono text-sm text-success">status: enviado</p>
+        <p className="text-sm text-muted-foreground">Gracias por escribir. Te responderé lo antes posible.</p>
       </div>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit} className="rounded-lg border border-border bg-card p-6">
+    <form onSubmit={handleSubmit} className="border-t border-border pt-5">
       {/* Honeypot: campo oculto para bots, invisible para personas */}
       <input
         type="text"
@@ -50,20 +50,20 @@ export default function ContactForm() {
 
       <div className="mb-4 grid gap-4 sm:grid-cols-2">
         <div className="space-y-1.5">
-          <Label htmlFor="cf-name">Nombre</Label>
+          <Label htmlFor="cf-name" className="font-mono text-xs text-muted-foreground">nombre</Label>
           <Input id="cf-name" value={form.name} onChange={(e) => set("name", e.target.value)} required maxLength={160} />
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="cf-email">Email</Label>
+          <Label htmlFor="cf-email" className="font-mono text-xs text-muted-foreground">email</Label>
           <Input id="cf-email" type="email" value={form.email} onChange={(e) => set("email", e.target.value)} required />
         </div>
       </div>
       <div className="mb-4 space-y-1.5">
-        <Label htmlFor="cf-subject">Asunto</Label>
+        <Label htmlFor="cf-subject" className="font-mono text-xs text-muted-foreground">asunto</Label>
         <Input id="cf-subject" value={form.subject} onChange={(e) => set("subject", e.target.value)} maxLength={200} />
       </div>
       <div className="mb-4 space-y-1.5">
-        <Label htmlFor="cf-body">Mensaje</Label>
+        <Label htmlFor="cf-body" className="font-mono text-xs text-muted-foreground">mensaje</Label>
         <Textarea id="cf-body" rows={5} value={form.body} onChange={(e) => set("body", e.target.value)} required maxLength={4000} />
       </div>
       {status === "error" && <p className="mb-3.5 text-sm text-destructive">{error}</p>}
