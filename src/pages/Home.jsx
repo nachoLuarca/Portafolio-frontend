@@ -6,6 +6,7 @@ import ProjectCard from "../components/ProjectCard.jsx";
 import ContactForm from "../components/ContactForm.jsx";
 import Container from "../components/Container.jsx";
 import LoadingState from "../components/LoadingState.jsx";
+import SectionHeading from "../components/SectionHeading.jsx";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { fadeUp, viewportOnce } from "@/lib/motion";
@@ -60,71 +61,93 @@ export default function Home() {
     api.get("/certifications").then((res) => setCertifications(res.data)).catch(() => {});
   }, []);
 
+  const featuredProject = projects.find((p) => p.featured) || projects[0];
+  const restProjects = projects.filter((p) => p !== featuredProject);
+
   return (
     <div>
       {/* Hero / Sobre mí */}
-      <Container as="section" id="perfil" className="pt-22 pb-14">
-        <div className="w-full md:mx-auto md:max-w-250">
-          <motion.h1 initial="hidden" animate="show" variants={fadeUp} className="mb-4.5 w-full text-center text-[clamp(32px,5vw,52px)]">
-            {profile?.full_name || "Tu nombre aquí"}
-          </motion.h1>
+      <Container as="section" id="perfil" className="pt-22 pb-16">
+        <div className="grid gap-8 md:grid-cols-[1.1fr_1fr] md:items-start md:gap-10">
+          <div>
+            <motion.h1 initial="hidden" animate="show" variants={fadeUp} className="mb-3 text-left text-[clamp(34px,5.5vw,56px)] leading-[1.05]">
+              {profile?.full_name || "Tu nombre aquí"}
+            </motion.h1>
 
-          <motion.p initial="hidden" animate="show" variants={fadeUp} className="mb-5 min-h-6 w-full text-center font-mono text-base text-primary">
-            <TypedHeadline headline={profile?.headline} />
-          </motion.p>
+            <motion.p initial="hidden" animate="show" variants={fadeUp} className="mb-5 min-h-6 text-left font-mono text-base text-primary">
+              <TypedHeadline headline={profile?.headline} />
+            </motion.p>
 
-          {profile?.skills?.length > 0 && (
-            <motion.div initial="hidden" animate="show" variants={fadeUp} className="mb-7 w-full text-center">
-              <div className="mb-2.5 font-mono text-xs text-muted-foreground">stack</div>
-              <div className="flex flex-wrap justify-center gap-2">
-                {profile.skills.map((s) => (
-                  <Badge key={s} variant="outline" className="font-mono font-normal text-muted-foreground">{s}</Badge>
-                ))}
-              </div>
-            </motion.div>
-          )}
+            {profile?.location && (
+              <motion.p initial="hidden" animate="show" variants={fadeUp} className="mb-6 font-mono text-[13px] text-muted-foreground">
+                📍 {profile.location}
+              </motion.p>
+            )}
 
-          <motion.p
-            initial="hidden"
-            animate="show"
-            variants={fadeUp}
-            className="mb-3 w-full text-left text-base wrap-break-word whitespace-normal text-muted-foreground md:text-justify md:[text-justify:inter-word]"
-          >
-            {profile?.bio}
-          </motion.p>
-          {profile?.location && (
-            <motion.p initial="hidden" animate="show" variants={fadeUp} className="mb-7 w-full text-center font-mono text-[13px]">📍 {profile.location}</motion.p>
-          )}
+            {profile?.cv_url && (
+              <motion.div initial="hidden" animate="show" variants={fadeUp} className="flex">
+                <Button asChild><a href={profile.cv_url} target="_blank" rel="noreferrer">Descargar CV</a></Button>
+              </motion.div>
+            )}
+          </div>
 
-          {profile?.cv_url && (
-            <motion.div initial="hidden" animate="show" variants={fadeUp} className="flex">
-              <Button asChild><a href={profile.cv_url} target="_blank" rel="noreferrer">Descargar CV</a></Button>
-            </motion.div>
-          )}
+          <motion.div initial="hidden" animate="show" variants={fadeUp} className="overflow-hidden rounded-lg border border-border bg-card">
+            <div className="flex items-center gap-1.5 border-b border-border px-4 py-2.5">
+              <span className="size-2.5 rounded-full bg-destructive/60" />
+              <span className="size-2.5 rounded-full bg-warning/60" />
+              <span className="size-2.5 rounded-full bg-success/60" />
+              <span className="ml-2 font-mono text-[11px] text-muted-foreground">whoami.sh</span>
+            </div>
+            <div className="p-5">
+              {profile?.bio && (
+                <p className="mb-5 text-left text-sm leading-relaxed text-muted-foreground wrap-break-word whitespace-normal">
+                  {profile.bio}
+                </p>
+              )}
+              {profile?.skills?.length > 0 && (
+                <div>
+                  <div className="mb-2.5 font-mono text-xs text-accent-2">$ stack --list</div>
+                  <div className="flex flex-wrap gap-2">
+                    {profile.skills.map((s) => (
+                      <Badge key={s} variant="outline" className="font-mono font-normal text-muted-foreground">{s}</Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </motion.div>
         </div>
       </Container>
 
       {/* Proyectos destacados */}
       <Container as="section" id="proyectos" className="py-6 pb-16">
-        <div className="mb-7 flex items-end justify-between">
-          <h2 className="text-[28px]">Proyectos</h2>
-          <Link to="/proyectos" className="font-mono text-[13px] text-muted-foreground hover:text-accent-2">ver todos →</Link>
-        </div>
+        <SectionHeading
+          index="01"
+          title="Proyectos"
+          action={<Link to="/proyectos" className="font-mono text-[13px] text-muted-foreground hover:text-accent-2">ver todos →</Link>}
+        />
         {projectsLoading && <LoadingState rows={3} />}
         {!projectsLoading && projects.length === 0 && (
           <p className="text-sm">Aún no hay proyectos publicados.</p>
         )}
-        {projects.map((p) => (
-          <motion.div key={p.id} initial="hidden" whileInView="show" viewport={viewportOnce} variants={fadeUp}>
-            <ProjectCard project={p} />
-          </motion.div>
-        ))}
+        {featuredProject && (
+          <div className="grid gap-4 md:grid-cols-2">
+            <motion.div initial="hidden" whileInView="show" viewport={viewportOnce} variants={fadeUp} className="md:col-span-2">
+              <ProjectCard project={featuredProject} large />
+            </motion.div>
+            {restProjects.map((p) => (
+              <motion.div key={p.id} initial="hidden" whileInView="show" viewport={viewportOnce} variants={fadeUp}>
+                <ProjectCard project={p} />
+              </motion.div>
+            ))}
+          </div>
+        )}
       </Container>
 
       {/* Experiencia */}
       {experience.length > 0 && (
         <Container as="section" id="experiencia" className="py-10 pb-16">
-          <motion.h2 initial="hidden" whileInView="show" viewport={viewportOnce} variants={fadeUp} className="mb-7 text-[28px]">Experiencia</motion.h2>
+          <SectionHeading index="02" title="Experiencia" />
           <div className="border-l border-border pl-6">
             {experience.map((item) => (
               <motion.div key={item.id} initial="hidden" whileInView="show" viewport={viewportOnce} variants={fadeUp} className="relative mb-7">
@@ -144,16 +167,25 @@ export default function Home() {
       {/* Educación */}
       {education.length > 0 && (
         <Container as="section" id="educacion" className="py-6 pb-16">
-          <motion.h2 initial="hidden" whileInView="show" viewport={viewportOnce} variants={fadeUp} className="mb-7 text-[28px]">Educación</motion.h2>
-          <div className="grid gap-3.5">
+          <SectionHeading index="03" title="Educación" />
+          <div className="divide-y divide-border border-t border-border">
             {education.map((item) => (
-              <motion.div key={item.id} initial="hidden" whileInView="show" viewport={viewportOnce} variants={fadeUp} className="rounded-lg border border-border bg-card p-5">
-                <div className="mb-1 font-mono text-xs text-muted-foreground">
+              <motion.div
+                key={item.id}
+                initial="hidden"
+                whileInView="show"
+                viewport={viewportOnce}
+                variants={fadeUp}
+                className="grid gap-1 py-4 sm:grid-cols-[160px_1fr] sm:gap-6"
+              >
+                <div className="font-mono text-xs text-muted-foreground">
                   {formatRange(item.start_date, item.end_date)}
                 </div>
-                <h3 className="mb-0.5 text-[17px]">{item.degree}{item.field ? ` · ${item.field}` : ""}</h3>
-                <div className="text-sm text-primary">{item.institution}</div>
-                {item.description && <p className="mt-2 text-sm">{item.description}</p>}
+                <div>
+                  <h3 className="mb-0.5 text-[17px]">{item.degree}{item.field ? ` · ${item.field}` : ""}</h3>
+                  <div className="text-sm text-primary">{item.institution}</div>
+                  {item.description && <p className="mt-2 text-sm">{item.description}</p>}
+                </div>
               </motion.div>
             ))}
           </div>
@@ -163,8 +195,8 @@ export default function Home() {
       {/* Certificaciones */}
       {certifications.length > 0 && (
         <Container as="section" id="certificaciones" className="py-6 pb-16">
-          <motion.h2 initial="hidden" whileInView="show" viewport={viewportOnce} variants={fadeUp} className="mb-7 text-[28px]">Certificaciones</motion.h2>
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-3.5">
+          <SectionHeading index="04" title="Certificaciones" />
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-3">
             {certifications.map((c) => (
               <motion.a
                 key={c.id}
@@ -172,16 +204,16 @@ export default function Home() {
                 whileInView="show"
                 viewport={viewportOnce}
                 variants={fadeUp}
-                whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                whileHover={{ y: -3, transition: { duration: 0.2 } }}
                 href={c.credential_url || undefined}
                 target={c.credential_url ? "_blank" : undefined}
                 rel="noreferrer"
-                className="block rounded-lg border border-border bg-card p-4.5 transition-shadow hover:border-primary hover:shadow-lg"
+                className="block rounded-md border border-border bg-transparent p-3.5 transition-colors hover:border-primary hover:bg-card"
               >
-                <div className="mb-1 text-[15px]">{c.name}</div>
-                <div className="font-mono text-xs text-muted-foreground">{c.issuer}</div>
+                <div className="mb-1 text-sm">{c.name}</div>
+                <div className="font-mono text-[11px] text-muted-foreground">{c.issuer}</div>
                 {c.issue_date && (
-                  <div className="mt-1.5 font-mono text-[11px] text-muted-foreground">
+                  <div className="mt-1.5 font-mono text-[10px] text-muted-foreground">
                     {new Date(c.issue_date).toLocaleDateString("es-ES", { year: "numeric", month: "short" })}
                   </div>
                 )}
@@ -193,10 +225,43 @@ export default function Home() {
 
       {/* Contacto */}
       <Container as="section" id="contacto" className="py-6 pb-24">
-        <motion.h2 initial="hidden" whileInView="show" viewport={viewportOnce} variants={fadeUp} className="mb-7 text-[28px]">Contacto</motion.h2>
-        <motion.div initial="hidden" whileInView="show" viewport={viewportOnce} variants={fadeUp}>
-          <ContactForm />
-        </motion.div>
+        <SectionHeading index="05" title="Contacto" />
+        <div className="grid gap-8 md:grid-cols-[1fr_1.3fr] md:gap-10">
+          <motion.div initial="hidden" whileInView="show" viewport={viewportOnce} variants={fadeUp}>
+            <p className="mb-6 text-sm leading-relaxed text-muted-foreground">
+              ¿Tenés un proyecto en mente o alguna consulta? Escribime y te respondo a la brevedad.
+            </p>
+            <dl className="space-y-3 font-mono text-[13px]">
+              {profile?.email && (
+                <div className="flex gap-2">
+                  <dt className="text-accent-2">email</dt>
+                  <dd><a href={`mailto:${profile.email}`} className="hover:text-accent-2">{profile.email}</a></dd>
+                </div>
+              )}
+              {profile?.github_url && (
+                <div className="flex gap-2">
+                  <dt className="text-accent-2">github</dt>
+                  <dd><a href={profile.github_url} target="_blank" rel="noreferrer" className="hover:text-accent-2">{profile.github_url.replace(/^https?:\/\//, "")}</a></dd>
+                </div>
+              )}
+              {profile?.linkedin_url && (
+                <div className="flex gap-2">
+                  <dt className="text-accent-2">linkedin</dt>
+                  <dd><a href={profile.linkedin_url} target="_blank" rel="noreferrer" className="hover:text-accent-2">{profile.linkedin_url.replace(/^https?:\/\//, "")}</a></dd>
+                </div>
+              )}
+              {profile?.location && (
+                <div className="flex gap-2">
+                  <dt className="text-accent-2">ubicación</dt>
+                  <dd>{profile.location}</dd>
+                </div>
+              )}
+            </dl>
+          </motion.div>
+          <motion.div initial="hidden" whileInView="show" viewport={viewportOnce} variants={fadeUp}>
+            <ContactForm />
+          </motion.div>
+        </div>
       </Container>
     </div>
   );
