@@ -64,7 +64,7 @@ export default function Home() {
     <div>
       {/* Hero / Sobre mí */}
       <Container as="section" id="perfil" className="pt-22 pb-14">
-        <div className="w-full md:mx-auto md:max-w-[1000px]">
+        <div className="w-full md:mx-auto md:max-w-250">
           <motion.h1 initial="hidden" animate="show" variants={fadeUp} className="mb-4.5 w-full text-center text-[clamp(32px,5vw,52px)]">
             {profile?.full_name || "Tu nombre aquí"}
           </motion.h1>
