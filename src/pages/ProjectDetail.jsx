@@ -4,7 +4,6 @@ import api from "../api/axios";
 import Container from "../components/Container.jsx";
 import LoadingState from "../components/LoadingState.jsx";
 import EmptyState from "../components/EmptyState.jsx";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
 export default function ProjectDetail() {
@@ -35,20 +34,18 @@ export default function ProjectDetail() {
 
   return (
     <Container className="max-w-190 py-14 pb-22">
-      <Link to="/proyectos" className="font-mono text-[13px] text-muted-foreground">← proyectos/</Link>
+      <Link to="/proyectos" className="font-mono text-[13px] text-muted-foreground hover:text-primary">← proyectos</Link>
 
-      <h1 className="my-4 text-4xl">{project.title}</h1>
-      <div className="mb-6 flex flex-wrap gap-2">
-        {(project.tech_stack || []).map((t) => (
-          <Badge key={t} variant="outline" className="font-mono font-normal text-muted-foreground">{t}</Badge>
-        ))}
+      <h1 className="my-4 text-3xl font-semibold">{project.title}</h1>
+      <div className="mb-6 flex flex-wrap gap-2 font-mono text-xs text-muted-foreground">
+        {(project.tech_stack || []).join(" · ")}
       </div>
 
       {project.cover_image_url && (
         <img src={project.cover_image_url} alt={project.title} className="mb-7 w-full rounded-lg border border-border" />
       )}
 
-      <p className="mb-8 text-base whitespace-pre-wrap text-foreground/85">
+      <p className="mb-8 border-t border-border pt-6 text-base leading-relaxed whitespace-pre-wrap text-muted-foreground">
         {project.description}
       </p>
 

@@ -1,10 +1,7 @@
-export default function SectionHeading({ index, title, action, className = "" }) {
+export default function SectionHeading({ title, action, className = "" }) {
   return (
-    <div className={`mb-7 flex items-end justify-between gap-4 ${className}`}>
-      <h2 className="flex items-baseline gap-2.5 text-[28px]">
-        <span className="font-mono text-base text-accent-2">{index}·</span>
-        {title}
-      </h2>
+    <div className={`mb-5 flex items-end justify-between gap-4 border-t border-border pt-4 ${className}`}>
+      <h2 className="text-xl font-semibold">{title}</h2>
       {action}
     </div>
   );
