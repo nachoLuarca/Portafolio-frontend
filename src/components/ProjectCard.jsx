@@ -1,34 +1,24 @@
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import { Badge } from "@/components/ui/badge";
 
-export default function ProjectCard({ project, large = false }) {
+export default function ProjectCard({ project }) {
   return (
-    <motion.div whileHover={{ y: -4 }} transition={{ duration: 0.2, ease: "easeOut" }} className="h-full">
-      <Link
-        to={`/proyectos/${project.slug}`}
-        className={`flex h-full flex-col rounded-lg border border-border bg-card transition-shadow duration-200 hover:border-primary hover:shadow-lg ${large ? "p-7" : "p-5"}`}
-      >
-        <div className="mb-2 flex flex-wrap items-baseline gap-2">
-          {project.featured && (
-            <Badge variant="outline" className="border-primary font-mono font-normal text-primary">
-              destacado
-            </Badge>
-          )}
-          <span className="ml-auto font-mono text-[11px] text-muted-foreground">
-            {new Date(project.created_at).toLocaleDateString("es-ES", { year: "numeric", month: "short" })}
-          </span>
+    <Link
+      to={`/proyectos/${project.slug}`}
+      className="grid grid-cols-1 gap-1 border-b border-border py-4 transition-colors hover:bg-accent sm:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)_auto] sm:items-baseline sm:gap-4"
+    >
+      <div className="min-w-0">
+        <div className="flex flex-wrap items-baseline gap-x-2">
+          <h3 className="truncate text-base font-medium text-foreground">{project.title}</h3>
+          {project.featured && <span className="font-mono text-xs text-flag">destacado</span>}
         </div>
-        <h3 className={large ? "mb-2 text-2xl" : "mb-1.5 text-xl"}>{project.title}</h3>
-        <p className="mb-3 text-sm">{project.summary}</p>
-        <div className="flex flex-wrap gap-2">
-          {(project.tech_stack || []).map((t) => (
-            <Badge key={t} variant="outline" className="font-mono font-normal text-muted-foreground">
-              {t}
-            </Badge>
-          ))}
-        </div>
-      </Link>
-    </motion.div>
+        {project.summary && <p className="mt-0.5 truncate text-sm text-muted-foreground">{project.summary}</p>}
+      </div>
+      <div className="font-mono text-xs text-muted-foreground">
+        {(project.tech_stack || []).join(" · ")}
+      </div>
+      <div className="font-mono text-xs text-muted-foreground sm:text-right">
+        {new Date(project.created_at).toLocaleDateString("es-ES", { year: "numeric", month: "short" })}
+      </div>
+    </Link>
   );
 }
