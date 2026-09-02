@@ -1,9 +1,7 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import Container from "./Container.jsx";
 import ThemeToggle from "./ThemeToggle.jsx";
-import { useAuth } from "../context/AuthContext.jsx";
 import { Button } from "@/components/ui/button";
 
 const sections = [
@@ -17,9 +15,6 @@ const sections = [
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
-  const { user } = useAuth();
-  const adminTo = user ? "/admin" : "/admin/login";
-  const adminLabel = user ? "panel" : "admin";
 
   return (
     <header className="sticky top-0 z-10 border-b border-border bg-(--nav-bg) backdrop-blur-sm">
@@ -31,9 +26,6 @@ export default function Navbar() {
               {s.label}
             </a>
           ))}
-          <Button asChild size="sm" className="ml-3 shrink-0">
-            <Link to={adminTo}>{adminLabel}</Link>
-          </Button>
           <ThemeToggle />
         </div>
 
@@ -66,9 +58,6 @@ export default function Navbar() {
                 {s.label}
               </a>
             ))}
-            <Button asChild size="sm" className="mt-1">
-              <Link to={adminTo} onClick={() => setOpen(false)}>{adminLabel}</Link>
-            </Button>
           </Container>
         </div>
       )}
