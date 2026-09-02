@@ -8,9 +8,10 @@ import { Button } from "@/components/ui/button";
 
 const sections = [
   { href: "/#perfil", label: "perfil" },
-  { href: "/#experiencia", label: "experiencia" },
   { href: "/#proyectos", label: "proyectos" },
+  { href: "/#experiencia", label: "experiencia" },
   { href: "/#educacion", label: "educación" },
+  { href: "/#certificaciones", label: "certificaciones" },
   { href: "/#contacto", label: "contacto" },
 ];
 

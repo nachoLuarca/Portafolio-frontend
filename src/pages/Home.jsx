@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Mail } from "lucide-react";
 import api from "../api/axios";
 import ProjectCard from "../components/ProjectCard.jsx";
 import ContactForm from "../components/ContactForm.jsx";
@@ -9,7 +8,6 @@ import Container from "../components/Container.jsx";
 import LoadingState from "../components/LoadingState.jsx";
 import SectionHeading from "../components/SectionHeading.jsx";
 import WaveDivider from "../components/WaveDivider.jsx";
-import { GithubIcon, LinkedinIcon } from "../components/icons.jsx";
 import { Button } from "@/components/ui/button";
 import { recordStagger, recordRow } from "@/lib/motion";
 
@@ -106,7 +104,7 @@ export default function Home() {
         />
         {projectsLoading && <LoadingState rows={3} />}
         {!projectsLoading && projects.length === 0 && (
-          <p className="text-sm text-muted-foreground">Aún no hay proyectos publicados.</p>
+          <p className="text-center text-sm text-muted-foreground">Aún no hay proyectos publicados.</p>
         )}
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {projects.map((p) => <ProjectCard key={p.id} project={p} />)}
@@ -184,26 +182,6 @@ export default function Home() {
         <SectionHeading title="Contacto" subtitle="¿Tenés un proyecto en mente? Escribime y te respondo a la brevedad." />
         <div className="mx-auto max-w-xl">
           <ContactForm />
-
-          {(profile?.github_url || profile?.email || profile?.linkedin_url) && (
-            <div className="mt-8 flex justify-center gap-6">
-              {profile?.github_url && (
-                <a href={profile.github_url} target="_blank" rel="noreferrer" aria-label="GitHub" title="GitHub" className="text-muted-foreground transition-colors hover:text-primary">
-                  <GithubIcon className="size-5" />
-                </a>
-              )}
-              {profile?.linkedin_url && (
-                <a href={profile.linkedin_url} target="_blank" rel="noreferrer" aria-label="LinkedIn" title="LinkedIn" className="text-muted-foreground transition-colors hover:text-primary">
-                  <LinkedinIcon className="size-5" />
-                </a>
-              )}
-              {profile?.email && (
-                <a href={`mailto:${profile.email}`} aria-label="Email" title="Email" className="text-muted-foreground transition-colors hover:text-primary">
-                  <Mail className="size-5" />
-                </a>
-              )}
-            </div>
-          )}
         </div>
       </Container>
     </div>
