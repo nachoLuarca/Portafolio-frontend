@@ -7,6 +7,7 @@ import ContactForm from "../components/ContactForm.jsx";
 import Container from "../components/Container.jsx";
 import LoadingState from "../components/LoadingState.jsx";
 import SectionHeading from "../components/SectionHeading.jsx";
+import WaveDivider from "../components/WaveDivider.jsx";
 import { Button } from "@/components/ui/button";
 import { recordStagger, recordRow } from "@/lib/motion";
 
@@ -38,162 +39,172 @@ export default function Home() {
 
   return (
     <div>
-      {/* Hero / Sobre mí — única animación con intención del sitio: las filas
-          del registro aparecen en secuencia, como un resultado de consulta. */}
-      <Container as="section" id="perfil" className="pt-16 pb-14">
-        <motion.div initial="hidden" animate="show" variants={recordStagger} className="max-w-2xl">
-          <motion.h1 variants={recordRow} className="mb-1 text-[clamp(30px,4.5vw,44px)] leading-tight">
-            {profile?.full_name || "Tu nombre aquí"}
-          </motion.h1>
-          {profile?.headline && (
-            <motion.p variants={recordRow} className="mb-6 text-lg text-primary">
-              {profile.headline}
-            </motion.p>
-          )}
+      {/* Hero — navy fijo, ilustración propia (blobs + stack flotante) en vez
+          de un ícono decorativo copiado de un tercero. Única animación con
+          intención del sitio: las filas del hero entran en secuencia. */}
+      <section id="perfil" className="relative overflow-hidden bg-(--hero-bg) pt-20 pb-28">
+        <div className="pointer-events-none absolute -top-24 -right-24 size-80 rounded-full bg-(--hero-accent)/30 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-32 left-10 size-72 rounded-full bg-fuchsia-500/20 blur-3xl" />
 
-          {(profile?.location || profile?.skills?.length > 0) && (
-            <motion.dl variants={recordRow} className="mb-6 grid grid-cols-[100px_1fr] gap-x-4 gap-y-1.5 font-mono text-[13px]">
-              {profile?.location && (
-                <>
-                  <dt className="text-muted-foreground">location</dt>
-                  <dd>{profile.location}</dd>
-                </>
+        <Container className="relative grid gap-12 md:grid-cols-[1.2fr_1fr] md:items-center">
+          <motion.div initial="hidden" animate="show" variants={recordStagger}>
+            <motion.h1 variants={recordRow} className="mb-3 text-[clamp(34px,5vw,52px)] leading-[1.05] text-(--hero-fg)">
+              {profile?.full_name || "Tu nombre aquí"}
+            </motion.h1>
+            {profile?.headline && (
+              <motion.p variants={recordRow} className="mb-6 text-lg font-medium text-(--hero-accent)">
+                {profile.headline}
+              </motion.p>
+            )}
+            {profile?.bio && (
+              <motion.p variants={recordRow} className="mb-8 max-w-xl text-base leading-relaxed text-(--hero-muted)">
+                {profile.bio}
+              </motion.p>
+            )}
+            <motion.div variants={recordRow} className="flex flex-wrap items-center gap-4">
+              {profile?.cv_url && (
+                <Button asChild size="lg"><a href={profile.cv_url} target="_blank" rel="noreferrer">Descargar CV</a></Button>
               )}
-              {profile?.skills?.length > 0 && (
-                <>
-                  <dt className="text-muted-foreground">stack</dt>
-                  <dd>{profile.skills.join(" · ")}</dd>
-                </>
-              )}
-            </motion.dl>
-          )}
+              {profile?.location && <span className="text-sm text-(--hero-muted)">📍 {profile.location}</span>}
+            </motion.div>
+          </motion.div>
 
-          {profile?.bio && (
-            <motion.p variants={recordRow} className="mb-6 border-t border-border pt-5 text-base leading-relaxed text-muted-foreground">
-              {profile.bio}
-            </motion.p>
-          )}
-
-          {profile?.cv_url && (
-            <motion.div variants={recordRow}>
-              <Button asChild><a href={profile.cv_url} target="_blank" rel="noreferrer">Descargar CV</a></Button>
+          {profile?.skills?.length > 0 && (
+            <motion.div
+              initial="hidden"
+              animate="show"
+              variants={recordStagger}
+              className="relative flex flex-wrap items-center justify-center gap-3 py-6"
+            >
+              {profile.skills.map((s, i) => (
+                <motion.span
+                  key={s}
+                  variants={recordRow}
+                  className="rounded-full bg-white/10 px-4 py-2 text-sm font-medium text-(--hero-fg) backdrop-blur-sm"
+                  style={{ transform: `rotate(${(i % 2 === 0 ? -1 : 1) * (2 + i)}deg)` }}
+                >
+                  {s}
+                </motion.span>
+              ))}
             </motion.div>
           )}
-        </motion.div>
-      </Container>
+        </Container>
 
-      {/* Proyectos destacados */}
-      <Container as="section" id="proyectos" className="py-6 pb-14">
+        <div className="absolute right-0 bottom-0 left-0">
+          <WaveDivider fill="fill-background" />
+        </div>
+      </section>
+
+      {/* Proyectos */}
+      <Container as="section" id="proyectos" className="py-20">
         <SectionHeading
           title="Proyectos"
-          action={<Link to="/proyectos" className="font-mono text-[13px] text-muted-foreground hover:text-primary">ver todos</Link>}
+          subtitle="Una selección de trabajos con foco en integraciones, APIs y consistencia de datos."
+          action={<Link to="/proyectos" className="text-sm font-medium text-primary hover:underline">Ver todos</Link>}
         />
         {projectsLoading && <LoadingState rows={3} />}
         {!projectsLoading && projects.length === 0 && (
           <p className="text-sm text-muted-foreground">Aún no hay proyectos publicados.</p>
         )}
-        {projects.length > 0 && (
-          <div className="hidden border-b border-border pb-1.5 font-mono text-xs text-muted-foreground sm:grid sm:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)_auto] sm:gap-4">
-            <span>proyecto</span>
-            <span>stack</span>
-            <span className="text-right">actualizado</span>
-          </div>
-        )}
-        {projects.map((p) => <ProjectCard key={p.id} project={p} />)}
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {projects.map((p) => <ProjectCard key={p.id} project={p} />)}
+        </div>
       </Container>
 
       {/* Experiencia */}
       {experience.length > 0 && (
-        <Container as="section" id="experiencia" className="py-6 pb-14">
+        <Container as="section" id="experiencia" className="py-16">
           <SectionHeading title="Experiencia" />
-          {experience.map((item) => (
-            <div key={item.id} className="grid grid-cols-1 gap-1 border-b border-border py-4 sm:grid-cols-[140px_1fr] sm:gap-6">
-              <div className="font-mono text-xs text-muted-foreground">
-                {formatRange(item.start_date, item.end_date)}
+          <div className="border-l-2 border-primary/20 pl-6">
+            {experience.map((item) => (
+              <div key={item.id} className="relative mb-8 last:mb-0">
+                <span className="absolute -left-[27px] top-1.5 size-3 rounded-full bg-primary" />
+                <div className="mb-1 text-sm font-medium text-muted-foreground">
+                  {formatRange(item.start_date, item.end_date)}
+                </div>
+                <h3 className="mb-0.5 font-heading text-lg font-semibold">{item.role}</h3>
+                <div className="mb-2 text-sm font-medium text-primary">{item.company}{item.location ? ` · ${item.location}` : ""}</div>
+                {item.description && <p className="text-sm whitespace-pre-wrap">{item.description}</p>}
               </div>
-              <div>
-                <h3 className="mb-0.5 text-base font-medium">{item.role}</h3>
-                <div className="mb-1.5 text-sm text-primary">{item.company}{item.location ? ` · ${item.location}` : ""}</div>
-                {item.description && <p className="text-sm text-muted-foreground whitespace-pre-wrap">{item.description}</p>}
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </Container>
       )}
 
       {/* Educación */}
       {education.length > 0 && (
-        <Container as="section" id="educacion" className="py-6 pb-14">
+        <Container as="section" id="educacion" className="py-16">
           <SectionHeading title="Educación" />
-          {education.map((item) => (
-            <div key={item.id} className="grid grid-cols-1 gap-1 border-b border-border py-4 sm:grid-cols-[140px_1fr] sm:gap-6">
-              <div className="font-mono text-xs text-muted-foreground">
-                {formatRange(item.start_date, item.end_date)}
+          <div className="grid gap-4 sm:grid-cols-2">
+            {education.map((item) => (
+              <div key={item.id} className="rounded-2xl bg-muted p-5">
+                <div className="mb-1 text-sm font-medium text-muted-foreground">
+                  {formatRange(item.start_date, item.end_date)}
+                </div>
+                <h3 className="mb-0.5 font-heading text-base font-semibold">{item.degree}{item.field ? ` · ${item.field}` : ""}</h3>
+                <div className="text-sm font-medium text-primary">{item.institution}</div>
+                {item.description && <p className="mt-2 text-sm">{item.description}</p>}
               </div>
-              <div>
-                <h3 className="mb-0.5 text-base font-medium">{item.degree}{item.field ? ` · ${item.field}` : ""}</h3>
-                <div className="text-sm text-primary">{item.institution}</div>
-                {item.description && <p className="mt-1.5 text-sm text-muted-foreground">{item.description}</p>}
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </Container>
       )}
 
       {/* Certificaciones */}
       {certifications.length > 0 && (
-        <Container as="section" id="certificaciones" className="py-6 pb-14">
+        <Container as="section" id="certificaciones" className="py-16">
           <SectionHeading title="Certificaciones" />
-          {certifications.map((c) => (
-            <a
-              key={c.id}
-              href={c.credential_url || undefined}
-              target={c.credential_url ? "_blank" : undefined}
-              rel="noreferrer"
-              className="grid grid-cols-1 gap-1 border-b border-border py-3.5 transition-colors hover:bg-accent sm:grid-cols-[1fr_1fr_auto] sm:items-baseline sm:gap-4"
-            >
-              <span className="text-sm">{c.name}</span>
-              <span className="font-mono text-xs text-muted-foreground">{c.issuer}</span>
-              <span className="font-mono text-xs text-muted-foreground sm:text-right">
-                {c.issue_date && new Date(c.issue_date).toLocaleDateString("es-ES", { year: "numeric", month: "short" })}
-              </span>
-            </a>
-          ))}
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-4">
+            {certifications.map((c) => (
+              <a
+                key={c.id}
+                href={c.credential_url || undefined}
+                target={c.credential_url ? "_blank" : undefined}
+                rel="noreferrer"
+                className="rounded-2xl border border-border bg-card p-4.5 shadow-sm transition-shadow hover:shadow-md"
+              >
+                <div className="mb-1 text-sm font-medium">{c.name}</div>
+                <div className="text-xs text-muted-foreground">{c.issuer}</div>
+                {c.issue_date && (
+                  <div className="mt-1.5 text-xs text-muted-foreground">
+                    {new Date(c.issue_date).toLocaleDateString("es-ES", { year: "numeric", month: "short" })}
+                  </div>
+                )}
+              </a>
+            ))}
+          </div>
         </Container>
       )}
 
       {/* Contacto */}
-      <Container as="section" id="contacto" className="py-6 pb-20">
-        <SectionHeading title="Contacto" />
+      <Container as="section" id="contacto" className="py-16 pb-24">
+        <SectionHeading title="Contacto" subtitle="¿Tenés un proyecto en mente? Escribime y te respondo a la brevedad." />
         <div className="grid gap-8 md:grid-cols-[1fr_1.3fr] md:gap-10">
           <div>
-            <p className="mb-5 text-sm leading-relaxed text-muted-foreground">
-              ¿Tenés un proyecto en mente o alguna consulta? Escribime y te respondo a la brevedad.
-            </p>
-            <dl className="grid grid-cols-[90px_1fr] gap-x-4 gap-y-2 font-mono text-[13px]">
+            <dl className="space-y-4 text-sm">
               {profile?.email && (
-                <>
-                  <dt className="text-muted-foreground">email</dt>
-                  <dd><a href={`mailto:${profile.email}`} className="hover:text-primary">{profile.email}</a></dd>
-                </>
+                <div>
+                  <dt className="text-muted-foreground">Email</dt>
+                  <dd><a href={`mailto:${profile.email}`} className="font-medium text-primary hover:underline">{profile.email}</a></dd>
+                </div>
               )}
               {profile?.github_url && (
-                <>
-                  <dt className="text-muted-foreground">github</dt>
-                  <dd><a href={profile.github_url} target="_blank" rel="noreferrer" className="hover:text-primary">{profile.github_url.replace(/^https?:\/\//, "")}</a></dd>
-                </>
+                <div>
+                  <dt className="text-muted-foreground">GitHub</dt>
+                  <dd><a href={profile.github_url} target="_blank" rel="noreferrer" className="font-medium text-primary hover:underline">{profile.github_url.replace(/^https?:\/\//, "")}</a></dd>
+                </div>
               )}
               {profile?.linkedin_url && (
-                <>
-                  <dt className="text-muted-foreground">linkedin</dt>
-                  <dd><a href={profile.linkedin_url} target="_blank" rel="noreferrer" className="hover:text-primary">{profile.linkedin_url.replace(/^https?:\/\//, "")}</a></dd>
-                </>
+                <div>
+                  <dt className="text-muted-foreground">LinkedIn</dt>
+                  <dd><a href={profile.linkedin_url} target="_blank" rel="noreferrer" className="font-medium text-primary hover:underline">{profile.linkedin_url.replace(/^https?:\/\//, "")}</a></dd>
+                </div>
               )}
               {profile?.location && (
-                <>
-                  <dt className="text-muted-foreground">ubicación</dt>
-                  <dd>{profile.location}</dd>
-                </>
+                <div>
+                  <dt className="text-muted-foreground">Ubicación</dt>
+                  <dd className="font-medium">{profile.location}</dd>
+                </div>
               )}
             </dl>
           </div>
