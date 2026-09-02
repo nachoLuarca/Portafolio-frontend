@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import api from "../api/axios";
 import ProjectCard from "../components/ProjectCard.jsx";
 import Container from "../components/Container.jsx";
 import LoadingState from "../components/LoadingState.jsx";
 import EmptyState from "../components/EmptyState.jsx";
+import { staggerContainer, fadeUp, viewportOnce } from "@/lib/motion";
 
 export default function Projects() {
   const [projects, setProjects] = useState([]);
@@ -21,9 +23,19 @@ export default function Projects() {
       {!loading && projects.length === 0 && (
         <EmptyState title="Todavía no hay proyectos publicados" description="Volvé a pasar más adelante." />
       )}
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {projects.map((p) => <ProjectCard key={p.id} project={p} />)}
-      </div>
+      <motion.div
+        initial="hidden"
+        whileInView="show"
+        viewport={viewportOnce}
+        variants={staggerContainer}
+        className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+      >
+        {projects.map((p) => (
+          <motion.div key={p.id} variants={fadeUp}>
+            <ProjectCard project={p} />
+          </motion.div>
+        ))}
+      </motion.div>
     </Container>
   );
 }

@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform, useReducedMotion } from "framer-motion";
 import api from "../api/axios";
 import ProjectCard from "../components/ProjectCard.jsx";
 import ContactForm from "../components/ContactForm.jsx";
@@ -9,7 +9,7 @@ import LoadingState from "../components/LoadingState.jsx";
 import SectionHeading from "../components/SectionHeading.jsx";
 import WaveDivider from "../components/WaveDivider.jsx";
 import { Button } from "@/components/ui/button";
-import { recordStagger, recordRow } from "@/lib/motion";
+import { recordStagger, recordRow, staggerContainer, fadeUp, viewportOnce } from "@/lib/motion";
 
 function formatRange(start, end) {
   const opts = { year: "numeric", month: "short" };
@@ -25,6 +25,22 @@ export default function Home() {
   const [experience, setExperience] = useState([]);
   const [education, setEducation] = useState([]);
   const [certifications, setCertifications] = useState([]);
+
+  const heroRef = useRef(null);
+  const reduceMotion = useReducedMotion();
+  const rawX = useMotionValue(0);
+  const rawY = useMotionValue(0);
+  const springX = useSpring(rawX, { stiffness: 50, damping: 20 });
+  const springY = useSpring(rawY, { stiffness: 50, damping: 20 });
+  const blob2X = useTransform(springX, (v) => -v * 0.6);
+  const blob2Y = useTransform(springY, (v) => -v * 0.6);
+
+  function handleHeroMouseMove(e) {
+    if (reduceMotion || !heroRef.current) return;
+    const rect = heroRef.current.getBoundingClientRect();
+    rawX.set(((e.clientX - rect.left) / rect.width - 0.5) * 40);
+    rawY.set(((e.clientY - rect.top) / rect.height - 0.5) * 40);
+  }
 
   useEffect(() => {
     api.get("/profile").then((res) => setProfile(res.data)).catch(() => {});
@@ -42,9 +58,20 @@ export default function Home() {
       {/* Hero — navy fijo, ilustración propia (blobs + stack flotante) en vez
           de un ícono decorativo copiado de un tercero. Única animación con
           intención del sitio: las filas del hero entran en secuencia. */}
-      <section id="perfil" className="relative overflow-hidden bg-(--hero-bg) pt-20 pb-28">
-        <div className="pointer-events-none absolute -top-24 -right-24 size-80 rounded-full bg-(--hero-accent)/30 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-32 left-10 size-72 rounded-full bg-fuchsia-500/20 blur-3xl" />
+      <section
+        id="perfil"
+        ref={heroRef}
+        onMouseMove={handleHeroMouseMove}
+        className="relative overflow-hidden bg-(--hero-bg) pt-20 pb-28"
+      >
+        <motion.div
+          className="pointer-events-none absolute -top-24 -right-24 size-80 rounded-full bg-(--hero-accent)/30 blur-3xl"
+          style={reduceMotion ? undefined : { x: springX, y: springY }}
+        />
+        <motion.div
+          className="pointer-events-none absolute -bottom-32 left-10 size-72 rounded-full bg-fuchsia-500/20 blur-3xl"
+          style={reduceMotion ? undefined : { x: blob2X, y: blob2Y }}
+        />
 
         <Container className="relative grid gap-12 md:grid-cols-[1.2fr_1fr] md:items-center">
           <motion.div initial="hidden" animate="show" variants={recordStagger}>
@@ -106,18 +133,34 @@ export default function Home() {
         {!projectsLoading && projects.length === 0 && (
           <p className="text-center text-sm text-muted-foreground">Aún no hay proyectos publicados.</p>
         )}
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {projects.map((p) => <ProjectCard key={p.id} project={p} />)}
-        </div>
+        <motion.div
+          initial="hidden"
+          whileInView="show"
+          viewport={viewportOnce}
+          variants={staggerContainer}
+          className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+        >
+          {projects.map((p) => (
+            <motion.div key={p.id} variants={fadeUp}>
+              <ProjectCard project={p} />
+            </motion.div>
+          ))}
+        </motion.div>
       </Container>
 
       {/* Experiencia */}
       {experience.length > 0 && (
         <Container as="section" id="experiencia" className="py-16">
           <SectionHeading title="Experiencia" />
-          <div className="border-l-2 border-primary/20 pl-6">
+          <motion.div
+            initial="hidden"
+            whileInView="show"
+            viewport={viewportOnce}
+            variants={staggerContainer}
+            className="border-l-2 border-primary/20 pl-6"
+          >
             {experience.map((item) => (
-              <div key={item.id} className="relative mb-8 last:mb-0">
+              <motion.div key={item.id} variants={fadeUp} className="relative mb-8 last:mb-0">
                 <span className="absolute -left-[27px] top-1.5 size-3 rounded-full bg-primary" />
                 <div className="mb-1 text-sm font-medium text-muted-foreground">
                   {formatRange(item.start_date, item.end_date)}
@@ -125,9 +168,9 @@ export default function Home() {
                 <h3 className="mb-0.5 font-heading text-lg font-semibold">{item.role}</h3>
                 <div className="mb-2 text-sm font-medium text-primary">{item.company}{item.location ? ` · ${item.location}` : ""}</div>
                 {item.description && <p className="text-sm whitespace-pre-wrap">{item.description}</p>}
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </Container>
       )}
 
@@ -135,9 +178,15 @@ export default function Home() {
       {education.length > 0 && (
         <Container as="section" id="educacion" className="py-16">
           <SectionHeading title="Educación" />
-          <div className="grid gap-4 sm:grid-cols-2">
+          <motion.div
+            initial="hidden"
+            whileInView="show"
+            viewport={viewportOnce}
+            variants={staggerContainer}
+            className="grid gap-4 sm:grid-cols-2"
+          >
             {education.map((item) => (
-              <div key={item.id} className="rounded-2xl bg-muted p-5">
+              <motion.div key={item.id} variants={fadeUp} className="rounded-2xl bg-muted p-5">
                 <div className="mb-1 text-sm font-medium text-muted-foreground">
                   {formatRange(item.start_date, item.end_date)}
                 </div>
@@ -145,9 +194,9 @@ export default function Home() {
                 {item.field && <div className="mb-0.5 text-sm text-muted-foreground">{item.field}</div>}
                 <div className="text-sm font-medium text-primary">{item.institution}</div>
                 {item.description && <p className="mt-2 text-sm">{item.description}</p>}
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </Container>
       )}
 
@@ -155,14 +204,22 @@ export default function Home() {
       {certifications.length > 0 && (
         <Container as="section" id="certificaciones" className="py-16">
           <SectionHeading title="Certificaciones" />
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-4">
+          <motion.div
+            initial="hidden"
+            whileInView="show"
+            viewport={viewportOnce}
+            variants={staggerContainer}
+            className="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-4"
+          >
             {certifications.map((c) => (
-              <a
+              <motion.a
                 key={c.id}
+                variants={fadeUp}
+                whileHover={{ y: -3 }}
                 href={c.credential_url || undefined}
                 target={c.credential_url ? "_blank" : undefined}
                 rel="noreferrer"
-                className="rounded-2xl border border-border bg-card p-4.5 shadow-sm transition-shadow hover:shadow-md"
+                className="block rounded-2xl border border-border bg-card p-4.5 shadow-sm transition-shadow hover:shadow-md"
               >
                 <div className="mb-1 text-sm font-medium">{c.name}</div>
                 <div className="text-xs text-muted-foreground">{c.issuer}</div>
@@ -171,18 +228,24 @@ export default function Home() {
                     {new Date(c.issue_date).toLocaleDateString("es-ES", { year: "numeric", month: "short" })}
                   </div>
                 )}
-              </a>
+              </motion.a>
             ))}
-          </div>
+          </motion.div>
         </Container>
       )}
 
       {/* Contacto */}
       <Container as="section" id="contacto" className="py-16 pb-24">
         <SectionHeading title="Contacto" subtitle="¿Tenés un proyecto en mente? Escribime y te respondo a la brevedad." />
-        <div className="mx-auto max-w-xl">
+        <motion.div
+          initial="hidden"
+          whileInView="show"
+          viewport={viewportOnce}
+          variants={fadeUp}
+          className="mx-auto max-w-xl"
+        >
           <ContactForm />
-        </div>
+        </motion.div>
       </Container>
     </div>
   );
