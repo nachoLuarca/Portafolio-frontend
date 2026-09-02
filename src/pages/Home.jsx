@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { Mail } from "lucide-react";
 import api from "../api/axios";
 import ProjectCard from "../components/ProjectCard.jsx";
 import ContactForm from "../components/ContactForm.jsx";
@@ -8,6 +9,7 @@ import Container from "../components/Container.jsx";
 import LoadingState from "../components/LoadingState.jsx";
 import SectionHeading from "../components/SectionHeading.jsx";
 import WaveDivider from "../components/WaveDivider.jsx";
+import { GithubIcon, LinkedinIcon } from "../components/icons.jsx";
 import { Button } from "@/components/ui/button";
 import { recordStagger, recordRow } from "@/lib/motion";
 
@@ -141,7 +143,8 @@ export default function Home() {
                 <div className="mb-1 text-sm font-medium text-muted-foreground">
                   {formatRange(item.start_date, item.end_date)}
                 </div>
-                <h3 className="mb-0.5 font-heading text-base font-semibold">{item.degree}{item.field ? ` · ${item.field}` : ""}</h3>
+                <h3 className="font-heading text-base font-semibold">{item.degree}</h3>
+                {item.field && <div className="mb-0.5 text-sm text-muted-foreground">{item.field}</div>}
                 <div className="text-sm font-medium text-primary">{item.institution}</div>
                 {item.description && <p className="mt-2 text-sm">{item.description}</p>}
               </div>
@@ -179,36 +182,28 @@ export default function Home() {
       {/* Contacto */}
       <Container as="section" id="contacto" className="py-16 pb-24">
         <SectionHeading title="Contacto" subtitle="¿Tenés un proyecto en mente? Escribime y te respondo a la brevedad." />
-        <div className="grid gap-8 md:grid-cols-[1fr_1.3fr] md:gap-10">
-          <div>
-            <dl className="space-y-4 text-sm">
-              {profile?.email && (
-                <div>
-                  <dt className="text-muted-foreground">Email</dt>
-                  <dd><a href={`mailto:${profile.email}`} className="font-medium text-primary hover:underline">{profile.email}</a></dd>
-                </div>
-              )}
+        <div className="mx-auto max-w-xl">
+          <ContactForm />
+
+          {(profile?.github_url || profile?.email || profile?.linkedin_url) && (
+            <div className="mt-8 flex justify-center gap-6">
               {profile?.github_url && (
-                <div>
-                  <dt className="text-muted-foreground">GitHub</dt>
-                  <dd><a href={profile.github_url} target="_blank" rel="noreferrer" className="font-medium text-primary hover:underline">{profile.github_url.replace(/^https?:\/\//, "")}</a></dd>
-                </div>
+                <a href={profile.github_url} target="_blank" rel="noreferrer" aria-label="GitHub" title="GitHub" className="text-muted-foreground transition-colors hover:text-primary">
+                  <GithubIcon className="size-5" />
+                </a>
               )}
               {profile?.linkedin_url && (
-                <div>
-                  <dt className="text-muted-foreground">LinkedIn</dt>
-                  <dd><a href={profile.linkedin_url} target="_blank" rel="noreferrer" className="font-medium text-primary hover:underline">{profile.linkedin_url.replace(/^https?:\/\//, "")}</a></dd>
-                </div>
+                <a href={profile.linkedin_url} target="_blank" rel="noreferrer" aria-label="LinkedIn" title="LinkedIn" className="text-muted-foreground transition-colors hover:text-primary">
+                  <LinkedinIcon className="size-5" />
+                </a>
               )}
-              {profile?.location && (
-                <div>
-                  <dt className="text-muted-foreground">Ubicación</dt>
-                  <dd className="font-medium">{profile.location}</dd>
-                </div>
+              {profile?.email && (
+                <a href={`mailto:${profile.email}`} aria-label="Email" title="Email" className="text-muted-foreground transition-colors hover:text-primary">
+                  <Mail className="size-5" />
+                </a>
               )}
-            </dl>
-          </div>
-          <ContactForm />
+            </div>
+          )}
         </div>
       </Container>
     </div>
