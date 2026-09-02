@@ -22,14 +22,15 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-10 border-b border-border bg-(--nav-bg) backdrop-blur-sm">
-      <Container as="nav" className="flex h-16 items-center justify-end gap-4">
-        <div className="hidden items-center gap-5 md:flex">
+      <div className="h-[3px] bg-(--hero-accent)" />
+      <Container as="nav" className="flex h-16 items-center justify-end gap-2">
+        <div className="hidden items-center gap-1 md:flex">
           {sections.map((s) => (
-            <a key={s.href} href={s.href} className="font-mono text-[13px] whitespace-nowrap text-muted-foreground hover:text-primary">
+            <a key={s.href} href={s.href} className="rounded-full px-3 py-1.5 text-sm whitespace-nowrap text-muted-foreground hover:bg-accent hover:text-primary">
               {s.label}
             </a>
           ))}
-          <Button asChild variant="outline" size="sm" className="shrink-0 font-mono">
+          <Button asChild size="sm" className="ml-3 shrink-0">
             <Link to={adminTo}>{adminLabel}</Link>
           </Button>
           <ThemeToggle />
@@ -59,12 +60,12 @@ export default function Navbar() {
                 key={s.href}
                 href={s.href}
                 onClick={() => setOpen(false)}
-                className="rounded-md px-2 py-2.5 font-mono text-[13px] text-muted-foreground hover:bg-secondary hover:text-primary"
+                className="rounded-md px-2 py-2.5 text-sm text-muted-foreground hover:bg-secondary hover:text-primary"
               >
                 {s.label}
               </a>
             ))}
-            <Button asChild variant="outline" size="sm" className="mt-1 font-mono">
+            <Button asChild size="sm" className="mt-1">
               <Link to={adminTo} onClick={() => setOpen(false)}>{adminLabel}</Link>
             </Button>
           </Container>
