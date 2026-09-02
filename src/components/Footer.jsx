@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Mail } from "lucide-react";
 import api from "../api/axios";
 import Container from "./Container.jsx";
+import WaveDivider from "./WaveDivider.jsx";
 
 function GithubIcon(props) {
   return (
@@ -35,21 +36,25 @@ export default function Footer() {
   if (links.length === 0) return null;
 
   return (
-    <footer className="border-t border-border py-10">
-      <Container className="flex justify-center gap-6">
-        {links.map(({ href, label, Icon, external }) => (
-          <a
-            key={label}
-            href={href}
-            target={external ? "_blank" : undefined}
-            rel={external ? "noreferrer" : undefined}
-            aria-label={label}
-            title={label}
-            className="text-muted-foreground transition-colors hover:text-primary"
-          >
-            <Icon className="size-5" />
-          </a>
-        ))}
+    <footer className="bg-(--hero-bg) pt-1 pb-10">
+      <WaveDivider fill="fill-(--hero-bg)" flip />
+      <Container className="flex flex-col items-center gap-4">
+        <div className="flex justify-center gap-6">
+          {links.map(({ href, label, Icon, external }) => (
+            <a
+              key={label}
+              href={href}
+              target={external ? "_blank" : undefined}
+              rel={external ? "noreferrer" : undefined}
+              aria-label={label}
+              title={label}
+              className="text-(--hero-muted) transition-colors hover:text-(--hero-accent)"
+            >
+              <Icon className="size-5" />
+            </a>
+          ))}
+        </div>
+        <p className="text-xs text-(--hero-muted)">© {new Date().getFullYear()} {profile?.full_name}</p>
       </Container>
     </footer>
   );
