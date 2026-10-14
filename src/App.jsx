@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import Navbar from "./components/Navbar.jsx";
@@ -22,6 +23,13 @@ import NotFound from "./pages/NotFound.jsx";
 
 export default function App() {
   const location = useLocation();
+
+  // El router no restablece el scroll al navegar: sin esto, /proyectos
+  // aparecía en la posición de la página anterior (a menudo el fondo).
+  useEffect(() => {
+    if (!location.hash) window.scrollTo(0, 0);
+  }, [location.pathname, location.hash]);
+
   const isAdmin = location.pathname.startsWith("/admin");
   const reduceMotion = useReducedMotion();
 
