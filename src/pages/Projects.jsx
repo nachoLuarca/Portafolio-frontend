@@ -5,7 +5,7 @@ import ProjectCard from "../components/ProjectCard.jsx";
 import Container from "../components/Container.jsx";
 import LoadingState from "../components/LoadingState.jsx";
 import EmptyState from "../components/EmptyState.jsx";
-import { staggerContainer, fadeUp, viewportOnce } from "@/lib/motion";
+import { staggerContainer, fadeUp } from "@/lib/motion";
 
 export default function Projects() {
   const [projects, setProjects] = useState([]);
@@ -24,9 +24,9 @@ export default function Projects() {
         <EmptyState title="Todavía no hay proyectos publicados" description="Volvé a pasar más adelante." />
       )}
       <motion.div
+        key={projects.length}
         initial="hidden"
-        whileInView="show"
-        viewport={viewportOnce}
+        animate="show"
         variants={staggerContainer}
         className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
       >
