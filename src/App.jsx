@@ -27,7 +27,7 @@ export default function App() {
   // El router no restablece el scroll al navegar: sin esto, /proyectos
   // aparecía en la posición de la página anterior (a menudo el fondo).
   useEffect(() => {
-    if (!location.hash) window.scrollTo(0, 0);
+    if (!location.hash) window.scrollTo({ top: 0, left: 0, behavior: "instant" });
   }, [location.pathname, location.hash]);
 
   const isAdmin = location.pathname.startsWith("/admin");
