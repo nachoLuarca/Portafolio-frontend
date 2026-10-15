@@ -24,7 +24,7 @@ export default function Footer() {
     <footer className="bg-(--hero-bg) pt-1 pb-10">
       <WaveDivider fill="fill-(--hero-bg)" flip />
       <Container className="flex flex-col items-center gap-4">
-        <div className="flex justify-center gap-6">
+        <div className="flex justify-center gap-8">
           {links.map(({ href, label, Icon, external }) => (
             <a
               key={label}
@@ -35,7 +35,7 @@ export default function Footer() {
               title={label}
               className="text-(--hero-muted) transition-colors hover:text-(--hero-accent)"
             >
-              <Icon className="size-5" />
+              <Icon className="size-8" />
             </a>
           ))}
         </div>
